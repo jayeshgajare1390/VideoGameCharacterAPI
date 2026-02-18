@@ -1,17 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
 using VideoGameCharacterAPI.Models;
+using VideoGameCharacterAPI.Services;
 
 namespace VideoGameCharacterAPI.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-public class VideoGameCharactersController : Controller
+public class VideoGameCharactersController(IVideoGameCharacterServices service) : Controller
 {
-    private static List<Character> characters = new List<Character>
-    {
-        new Character { id = 1, name = "Mario", Game = "Super Mario",Role = "Hero"},
-        new Character { id = 2, name = "Link", Game = "Halo", Role = "Hero" },
-        new Character { id = 3, name = "Bowser", Game = "Super Mario", Role = "Villain" },
-    };
+    
     // GET
     public IActionResult Index()
     {
@@ -20,5 +16,12 @@ public class VideoGameCharactersController : Controller
 
     [HttpGet]
     public async Task<ActionResult<List<Character>>> GetCharacters()
-        => await Task.FromResult(Ok(characters));
+    =>Ok(await service.GetAllCharactersAsync());
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Character>> GetCharacter(int id)
+    {
+        var character = await service.GetCharacterByIdAsync(id);
+        return character is  null ? NotFound("Character not found") : Ok(character);
+    }
 }
