@@ -1,6 +1,6 @@
 namespace VideoGameCharacterAPI.Dtos;
 
-public class CharacterResponce
+public class UpdateCharacterRequest
 {
     public int id { get; set; }
     public string name { get; set; }
